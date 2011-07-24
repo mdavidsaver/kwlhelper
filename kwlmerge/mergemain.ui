@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mergeMain</class>
+ <widget class="QDialog" name="mergeMain">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>655</width>
+    <height>450</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <widget class="QLabel" name="banner">
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Merging: </string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;A:</string>
+            </property>
+            <property name="buddy">
+             <cstring>srcA</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="srcA">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="viewA">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="useA">
+            <property name="toolTip">
+             <string>Pick source A as the final result. (Ctrl+3)</string>
+            </property>
+            <property name="text">
+             <string>Use A</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+3</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="copyA">
+            <property name="toolTip">
+             <string>Copy source A into the editor (Ctrl+1)</string>
+            </property>
+            <property name="text">
+             <string>Copy A to edit</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+1</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;B:</string>
+            </property>
+            <property name="buddy">
+             <cstring>srcB</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="srcB">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="viewB">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="copyB">
+            <property name="toolTip">
+             <string>Copy source B into the editor (Ctrl+2)</string>
+            </property>
+            <property name="text">
+             <string>Copy B to edit</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="useB">
+            <property name="toolTip">
+             <string>Pick source A as the final result. (Ctrl+4)</string>
+            </property>
+            <property name="text">
+             <string>Use B</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+4</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QTextEdit" name="finalTxt"/>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="resetBtn">
+       <property name="toolTip">
+        <string>Clear the editor</string>
+       </property>
+       <property name="text">
+        <string>Reset</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+R, Ctrl+S</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="acceptBtn">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Accept the current editor contents</string>
+       </property>
+       <property name="text">
+        <string>Ok</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelBtn">
+       <property name="toolTip">
+        <string>Abort the merge without a result</string>
+       </property>
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>finalTxt</tabstop>
+  <tabstop>acceptBtn</tabstop>
+  <tabstop>cancelBtn</tabstop>
+  <tabstop>resetBtn</tabstop>
+  <tabstop>copyA</tabstop>
+  <tabstop>copyB</tabstop>
+  <tabstop>useA</tabstop>
+  <tabstop>useB</tabstop>
+  <tabstop>srcA</tabstop>
+  <tabstop>srcB</tabstop>
+  <tabstop>viewA</tabstop>
+  <tabstop>viewB</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cancelBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>609</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>671</x>
+     <y>419</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>acceptBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>548</x>
+     <y>429</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>671</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useA</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>acceptA()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-33</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyA</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>copyAtoEdit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>223</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-28</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useB</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>acceptB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>569</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>copyB</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>copyBtoEdit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>409</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>srcA</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>mergeMain</receiver>
+   <slot>changeA(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>14</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-22</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>srcB</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>mergeMain</receiver>
+   <slot>changeB(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>529</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>680</x>
+     <y>19</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>clearEdit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>24</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-28</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>finalTxt</sender>
+   <signal>textChanged()</signal>
+   <receiver>mergeMain</receiver>
+   <slot>editChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>44</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-24</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>copyAtoEdit()</slot>
+  <slot>copyBtoEdit()</slot>
+  <slot>acceptA()</slot>
+  <slot>acceptB()</slot>
+  <slot>changeA(int)</slot>
+  <slot>changeB(int)</slot>
+  <slot>clearEdit()</slot>
+  <slot>editChanged()</slot>
+ </slots>
+</ui>
