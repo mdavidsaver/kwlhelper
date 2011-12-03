@@ -53,11 +53,15 @@ def merge(data):
             if not any(map(lambda x: other[1]==x[1] ,unique)):
                 unique.append(other)
 
-        m=mergeMain(None, unique, title='%s/%s'%(dn,pn))
-        if not m.exec_():
-            raise AbortMerge('Operation aborted')
+        if len(unique)>1:
+            m=mergeMain(None, unique, title='%s/%s'%(dn,pn))
+            if not m.exec_():
+                raise AbortMerge('Operation aborted')
+            unique=m.merged
+        else:
+            unique=unique[0][1]
 
-        SubElement(d, pn, name=pn).text=m.merged
+        SubElement(d, pn, name=pn).text=unique
 
     return base
 
