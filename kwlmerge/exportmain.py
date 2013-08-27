@@ -18,3 +18,5 @@ class exportMain(QtGui.QDialog, Ui_exportMain):
         
         root.appendRow(QtGui.QStandardItem("hello"))
         root.appendRow(QtGui.QStandardItem("world"))
+
+        self.items.setModel(self.model)
