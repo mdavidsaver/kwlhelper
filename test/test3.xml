@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wallet name="test">
+    <folder name="Form Data"/>
+    <folder name="Passwords">
+        <stream name="bjunk">aGVsbG8Ad29ybGQ=</stream>
+        <password name="hello">world</password>
+        <password name="ddd">eee</password>
+        <map name="mtest">
+            <mapentry name="key">value</mapentry>
+            <mapentry name="another">pair o </mapentry>
+        </map>
+    </folder>
+</wallet>

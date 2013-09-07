@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wallet name="test">
+    <folder name="Form Data"/>
+    <folder name="Passwords">
+        <password name="hello">world</password>
+        <password name="hello">world</password>
+        <password name="hello">wrold</password>
+    </folder>
+</wallet>
