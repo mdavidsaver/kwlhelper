@@ -5,7 +5,7 @@ from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
 import sys
 
 from PyQt4 import QtGui
-from kwlmerge.mergemain import mergeMain
+from kwlhelper.mergemain import mergeMain
 
 from collections import defaultdict
 
