@@ -83,9 +83,9 @@ for f in folders:
             
         elif etype==3:
             p=kwallet.readMap(thewallet,f,e,appname)
-            # returns a list of bytes
+            # returns a list of dbus.Byte
             # convert to byte string
-            p=reduce(str.__add__, map(str,p))
+            p=reduce(str.__add__, map(chr,p))
 
             # first 4 bytes is the number of pairs
             count,=int32.unpack(p[:4])
@@ -107,8 +107,11 @@ for f in folders:
 
                     vallen,=int32.unpack(p[:4])
                     p=p[4:]
-                    val=p[:vallen].decode('utf-16be')
-                    p=p[vallen:]
+                    if vallen==0xffffffff:
+                        val = ''
+                    else:
+                        val=p[:vallen].decode('utf-16be')
+                        p=p[vallen:]
 
                     print >>out,' '*12,u'<mapentry name="%s">%s</mapentry>'%(key,val)
                 print >>out,' '*8,'</map>'
