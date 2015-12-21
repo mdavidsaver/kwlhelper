@@ -3,7 +3,7 @@
     <folder name="Form Data"/>
     <folder name="Passwords">
         <stream name="bjunk"></stream>
-        <password name="hello">world</password>
+        <password name="hello">this is a test</password>
         <map name="mtest">
             <mapentry name="key">value</mapentry>
             <mapentry name="empty"></mapentry>

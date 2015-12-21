@@ -108,10 +108,10 @@ class FolderProxy(object):
 
     def readPassword(self, key):
         'Returns a string'
-        return str(self._KW._I.readPassword(self._W, self.name, key, self._KW.appname))
+        return self._KW._I.readPassword(self._W, self.name, key, self._KW.appname).decode('utf-8')
 
     def writePassword(self, key, value):
-        self._KW._I.writePassword(self._W, self.name, key, value, self._KW.appname)
+        self._KW._I.writePassword(self._W, self.name, key, value.encode('utf-8'), self._KW.appname)
 
     def readStream(self, key):
         'Returns a string'

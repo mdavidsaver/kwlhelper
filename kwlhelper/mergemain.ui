@@ -38,32 +38,19 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="labelA">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>&amp;A:</string>
-            </property>
-            <property name="buddy">
-             <cstring>srcA</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="srcA">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>1</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+             <string>Existing</string>
             </property>
            </widget>
           </item>
@@ -108,32 +95,19 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="labelB">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>&amp;B:</string>
-            </property>
-            <property name="buddy">
-             <cstring>srcB</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="srcB">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>1</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+             <string>New</string>
             </property>
            </widget>
           </item>
@@ -249,8 +223,6 @@
   <tabstop>copyB</tabstop>
   <tabstop>useA</tabstop>
   <tabstop>useB</tabstop>
-  <tabstop>srcA</tabstop>
-  <tabstop>srcB</tabstop>
   <tabstop>viewA</tabstop>
   <tabstop>viewB</tabstop>
  </tabstops>
@@ -295,8 +267,8 @@
    <slot>acceptA()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>31</x>
-     <y>219</y>
+     <x>37</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>-33</x>
@@ -327,8 +299,8 @@
    <slot>acceptB()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>569</x>
-     <y>222</y>
+     <x>648</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>326</x>
@@ -343,44 +315,12 @@
    <slot>copyBtoEdit()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>409</x>
-     <y>222</y>
+     <x>487</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>326</x>
      <y>224</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>srcA</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>mergeMain</receiver>
-   <slot>changeA(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>14</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-22</x>
-     <y>18</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>srcB</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>mergeMain</receiver>
-   <slot>changeB(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>529</x>
-     <y>16</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>680</x>
-     <y>19</y>
     </hint>
    </hints>
   </connection>
@@ -413,6 +353,22 @@
     <hint type="destinationlabel">
      <x>-24</x>
      <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>finalTxt</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>388</y>
     </hint>
    </hints>
   </connection>

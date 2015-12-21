@@ -10,6 +10,7 @@ appname='kwlimport'
 
 import codecs
 import sys
+from collections import OrderedDict
 from base64 import standard_b64decode
 
 from kwlhelper.service import KWallet, PASSWORD, STREAM, MAP
@@ -21,6 +22,49 @@ def resolve_ignore(folder, key, curtype, cur, newtype, new):
 def resolve_replace(folder, key, curtype, cur, newtype, new):
     print 'Resolve',folder,key,'replace with new'
     return newtype, new
+
+def resolve_merge(folder, key, curtype, cur, newtype, new):
+    print 'XXX',repr(cur),repr(new)
+    if curtype==newtype and cur==new:
+        print 'Resolve',folder,key,'no change'
+        return curtype, cur
+
+    from kwlhelper.mergemain import mergeMain
+
+    print 'Resolve',folder,key,'merge'
+
+    if curtype!=newtype:
+        print " Can't merge different types"
+        return curtype, cur
+
+    elif curtype==STREAM:
+        print " Can't merge STREAMs"
+        return curtype, cur
+
+    elif curtype==PASSWORD:
+        M = mergeMain(None, cur, new, title='Merge %s/%s'%(folder,key))
+        if not M.exec_():
+            print "Abort"
+            sys.exit(1)
+        return curtype, M.merged
+
+    elif curtype==MAP:
+        CD = OrderedDict(cur)
+        for K, V in new:
+            if K not in CD:
+                CD[K] = V
+            elif CD[K]==V:
+                continue
+            else:
+                M  = mergeMain(None, CD[K], V,
+                               title='Merge %s/%s/%s'%(folder,key,K))
+                if not M.exec_():
+                    print "Abort"
+                    sys.exit(1)
+                CD[K] = M.merged
+        return curtype, CD.items()
+    else:
+        raise ValueError("Unsupported etype %s"%repr(curtype))
 
 def getargs():
     from argparse import ArgumentParser
@@ -41,6 +85,10 @@ def getargs():
         A.conflict = resolve_ignore
     elif A.conflict=='replace':
         A.conflict = resolve_replace
+    elif A.conflict=='merge':
+        from PyQt4.QtGui import QApplication
+        A._qapp = QApplication(sys.argv) # need to keep this from being GC'd
+        A.conflict = resolve_merge
     else:
         P.error("Unknown conflict resolution method '%s'"%A.conflict)
 
@@ -70,7 +118,7 @@ def main(args):
             for e in f.findall('password'):
                 en=e.attrib['name']
                 etype = PASSWORD
-                val=e.text
+                val=e.text.decode('utf-8')
                 newents.append((en, etype, val))
 
             for e in f.findall('map'):

@@ -8,20 +8,15 @@ from ui_mergemain import Ui_mergeMain
 
 class mergeMain(QtGui.QDialog, Ui_mergeMain):
     
-    def __init__(self, parent, possibilities, title=None):
-        if len(possibilities)<2:
-            raise ValueError('Two possibilities are needed to merge')
-
+    def __init__(self, parent, A, B, title=None):
+        self.merged = None
         QtGui.QDialog.__init__(self,parent)
-
-        self.changeA=lambda i:self.srcSelect(self.viewA,i)
-        self.changeB=lambda i:self.srcSelect(self.viewB,i)
         
-        self.copyAtoEdit=lambda:self.copyToEdit(self.srcA)
-        self.copyBtoEdit=lambda:self.copyToEdit(self.srcB)
+        self.copyAtoEdit=lambda:self.copyToEdit(self.viewA)
+        self.copyBtoEdit=lambda:self.copyToEdit(self.viewB)
         
-        self.acceptA=lambda:self.pickResult(self.srcA)
-        self.acceptB=lambda:self.pickResult(self.srcB)
+        self.acceptA=lambda:self.pickResult(self.viewA)
+        self.acceptB=lambda:self.pickResult(self.viewB)
 
         self.setupUi(self)
 
@@ -34,29 +29,11 @@ class mergeMain(QtGui.QDialog, Ui_mergeMain):
             self.setWindowTitle(title)
             self.banner.setText(self.banner.text()+title)
 
-        self.data=[]
-
-        for name, value in possibilities:
-            self.srcA.addItem(name)
-            self.srcB.addItem(name)
-            self.data.append(value)
-
-        self.srcA.setCurrentIndex(1) # ensure onChange action is triggered
-
-        self.srcA.setCurrentIndex(0)
-        self.srcB.setCurrentIndex(1)
-
-    def srcSelect(self, txt, idx):
-        if idx>=0 and idx<len(self.data):
-            txt.setText(self.data[idx])
-        else:
-            txt.setText('')
+        self.viewA.setText(A)
+        self.viewB.setText(B)
 
     def copyToEdit(self, sel):
-        idx=sel.currentIndex()
-
-        if idx>=0 and idx<len(self.data):
-            self.finalTxt.append(self.data[idx])
+        self.finalTxt.setText(sel.toHtml())
 
     def pickResult(self, sel):
         self.copyToEdit(sel)
