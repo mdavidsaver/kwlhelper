@@ -101,7 +101,7 @@ class FolderProxy(object):
         Type is one of PASSWORD, STREAM, or MAP
         '''
         for E in self._KW._I.entryList(self._W, self.name, self._KW.appname):
-            T = self._KW._I.entryType(self._W, self.name, E, self._KW.appname)
+            T = int(self._KW._I.entryType(self._W, self.name, E, self._KW.appname))
             yield (E, T)
 
     __iter__ = iterentries
@@ -169,6 +169,28 @@ class FolderProxy(object):
 
         raw = _int32.pack(len(out)/2) + ''.join(out)
         self._KW._I.writeMap(self._W, self.name, key, raw, self._KW.appname)
+
+    def writeEntry(self, etype, key, value):
+        if etype==PASSWORD:
+            self.writePassword(key, value)
+        elif etype==STREAM:
+            self.writeStream(key, value)
+        elif etype==MAP:
+            self.writeMap(key, value)
+        else:
+            raise ValueError("Unknown entry type")
+
+    def readEntry(self, key, etype=None):
+        if etype is None:
+            etype = int(self._KW._I.entryType(self._W, self.name, key, self._KW.appname))
+        if etype==PASSWORD:
+            return self.readPassword(key)
+        elif etype==STREAM:
+            return self.readStream(key)
+        elif etype==MAP:
+            return self.readMap(key)
+        else:
+            raise ValueError("Unknown entry type %s"%repr(etype))
 
     def __repr__(self):
         return "FolderProxy(name='%s')"%self.name

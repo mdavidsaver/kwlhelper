@@ -14,20 +14,36 @@ from base64 import standard_b64decode
 
 from kwlhelper.service import KWallet, PASSWORD, STREAM, MAP
 
+def resolve_ignore(folder, key, curtype, cur, newtype, new):
+    print 'Resolve',folder,key,'keep existing'
+    return curtype, cur
+
+def resolve_replace(folder, key, curtype, cur, newtype, new):
+    print 'Resolve',folder,key,'replace with new'
+    return newtype, new
+
 def getargs():
     from argparse import ArgumentParser
     P = ArgumentParser(usage='%(prog)s [-i file|-] [-w walletname] [-O]',
                   description='Import KDE KWallet in XML form from stdin or file')
     P.add_argument('-i', '--input', help='Read output to file (- for stdout)')
     P.add_argument('-w', '--wallet', help='Wallet name (override name in file)')
-    P.add_argument('-O', '--overwrite', help='Overwrite existing entries',
-                 action='store_true', default=False)
+    P.add_argument('-C', '--conflict', default='ignore', metavar='METHOD',
+                   help='Conflict resolution: ignore, replace, merge')
     A = P.parse_args()
 
     if A.input:
         A.input = codecs.open(A.input, mode='r', encoding='utf-8')
     else:
         A.input = sys.stdin
+
+    if A.conflict=='ignore':
+        A.conflict = resolve_ignore
+    elif A.conflict=='replace':
+        A.conflict = resolve_replace
+    else:
+        P.error("Unknown conflict resolution method '%s'"%A.conflict)
+
     return A
 
 def main(args):
@@ -49,42 +65,42 @@ def main(args):
 
             ents = dict(FOLD.iterentries())
 
+            newents = []
+
             for e in f.findall('password'):
                 en=e.attrib['name']
+                etype = PASSWORD
                 val=e.text
-    
-                if en in ents and not args.overwrite:
-                    print 'Skipping password:',en
-                    continue
-    
-                FOLD.writePassword(en, val)
-                print 'Set password',en #,'with',val
+                newents.append((en, etype, val))
 
             for e in f.findall('map'):
                 en=e.attrib['name']
+                etype = MAP
 
-                if en in ents and not args.overwrite:
-                    print 'Skipping map:',en
-                    continue
-
-                elist = []
+                val = []
                 for me in e.findall('mapentry'):
-                    elist.append((me.attrib['name'], me.text))
+                    val.append((me.attrib['name'], me.text))
 
-                FOLD.writeMap(en, elist)
-                print 'Set map',en #,'with',repr(bytestr)
+                newents.append((en, etype, val))
 
             for e in f.findall('stream'):
                 en=e.attrib['name']
+                etype = STREAM
     
-                if en in ents and not args.overwrite:
-                    print 'Skipping binary:',en
-                    continue
-
                 val=standard_b64decode(e.text or '')
 
-                FOLD.writeStream(en, val)
-                print 'Set binary',en #,'with',val
+                newents.append((en, etype, val))
+
+            for en, etype, val in newents:
+                if en in ents:
+                    etype, val = args.conflict(FOLD.name, en,
+                                               ents[en],
+                                               FOLD.readEntry(en, ents[en]),
+                                               etype, val)
+    
+                FOLD.writeEntry(etype, en, val)
+                ents[en] = etype
+                print 'Store',etype,en #,'with',val
 
 if __name__=='__main__':
     args = getargs()
