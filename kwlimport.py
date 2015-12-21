@@ -24,7 +24,6 @@ def resolve_replace(folder, key, curtype, cur, newtype, new):
     return newtype, new
 
 def resolve_merge(folder, key, curtype, cur, newtype, new):
-    print 'XXX',repr(cur),repr(new)
     if curtype==newtype and cur==new:
         print 'Resolve',folder,key,'no change'
         return curtype, cur

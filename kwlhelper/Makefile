@@ -1,5 +1,5 @@
 
-UIC=mergemain exportmain
+UIC=mergemain
 
 UICPY=$(patsubst %,ui_%.py,$(UIC))
 
