@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Author: Michael Davidsaver <mdavidsaver@gmail.com>
-Copyright 2011
+Copyright 2015
 Licence: GPL 3+
 """
 
@@ -10,11 +10,9 @@ appname='kwlimport'
 
 import codecs
 import sys
-import dbus
-import struct
 from base64 import standard_b64decode
 
-int32=struct.Struct('!I')
+from kwlhelper.service import KWallet, PASSWORD, STREAM, MAP
 
 def getargs():
     from argparse import ArgumentParser
@@ -32,12 +30,7 @@ def getargs():
         A.input = sys.stdin
     return A
 
-def dopen():
-    sbus=dbus.SessionBus()
-    proxy=sbus.get_object('org.kde.kwalletd', '/modules/kwalletd')
-    return sbus, dbus.Interface(proxy, 'org.kde.KWallet')
-
-def main(kwallet, args):
+def main(args):
     from xml.etree.ElementTree import fromstring
 
     data=fromstring(args.input.read())
@@ -47,81 +40,55 @@ def main(kwallet, args):
     else:
         wname=data.attrib('name')
 
-    thewallet=kwallet.open(wname, 0, appname)
-    if thewallet<0:
-        raise RuntimeError('Failed to open wallet: '+wname)
+    KWL = KWallet(appname='kwlimport')
+    
+    with KWL.open(wname, create=True) as WALL:
+        for f in data.findall('folder'):
+            fn=f.attrib['name']
+            FOLD = WALL.folder(fn, create=True)
 
-    folders=kwallet.folderList(thewallet, appname)
+            ents = dict(FOLD.iterentries())
 
-    for f in data.findall('folder'):
-        fn=f.attrib['name']
-        if fn not in folders:
-            print 'create folder',fn
-            kwallet.createFolder(thewallet, fn, appname)
+            for e in f.findall('password'):
+                en=e.attrib['name']
+                val=e.text
+    
+                if en in ents and not args.overwrite:
+                    print 'Skipping password:',en
+                    continue
+    
+                FOLD.writePassword(en, val)
+                print 'Set password',en #,'with',val
 
-        ents=kwallet.entryList(thewallet,fn,appname)
+            for e in f.findall('map'):
+                en=e.attrib['name']
 
-        for e in f.findall('password'):
-            en=e.attrib['name']
-            val=e.text
+                if en in ents and not args.overwrite:
+                    print 'Skipping map:',en
+                    continue
 
-            if en in ents and not args.overwrite:
-                print 'Skipping password:',en
-                continue
+                elist = []
+                for me in e.findall('mapentry'):
+                    elist.append((me.attrib['name'], me.text))
 
-            kwallet.writePassword(thewallet,fn,en,val,appname)
-            print 'Set password',en #,'with',val
+                FOLD.writeMap(en, elist)
+                print 'Set map',en #,'with',repr(bytestr)
 
-        for e in f.findall('map'):
-            en=e.attrib['name']
+            for e in f.findall('stream'):
+                en=e.attrib['name']
+    
+                if en in ents and not args.overwrite:
+                    print 'Skipping binary:',en
+                    continue
 
-            bytestr=''
-            count=0
+                val=standard_b64decode(e.text or '')
 
-            if en in ents and not args.overwrite:
-                print 'Skipping map:',en
-                continue
-
-            for me in e.findall('mapentry'):
-                keystr=me.attrib['name'].encode('utf-16be')
-                if me.text is None:
-                    valstr = ''
-                else:
-                    valstr=me.text.encode('utf-16be')
-
-                bytestr+='%s%s%s%s'%(int32.pack(len(keystr)),
-                                     keystr,
-                                     int32.pack(len(valstr)),
-                                     valstr)
-
-                count+=1
-
-            bytestr=int32.pack(count)+bytestr
-
-            kwallet.writeMap(thewallet,fn,en,bytestr,appname)
-            print 'Set map',en #,'with',repr(bytestr)
-
-
-        for e in f.findall('stream'):
-            en=e.attrib['name']
-
-            val=standard_b64decode(e.text)
-
-            if en in ents and not args.overwrite:
-                print 'Skipping binary:',en
-                continue
-
-            kwallet.writeEntry(thewallet,fn,en,val,appname)
-            print 'Set binary',en #,'with',val
-
-
-    kwallet.close(thewallet,False,appname)
+                FOLD.writeStream(en, val)
+                print 'Set binary',en #,'with',val
 
 if __name__=='__main__':
-    session, kwallet = dopen()
     args = getargs()
     try:
-        main(kwallet, args)
+        main(args)
     finally:
-        session.close()
         args.input.close()

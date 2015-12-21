@@ -6,6 +6,7 @@
         <password name="hello">world</password>
         <map name="mtest">
             <mapentry name="key">value</mapentry>
+            <mapentry name="empty"></mapentry>
         </map>
     </folder>
 </wallet>

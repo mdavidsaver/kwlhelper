@@ -8,6 +8,7 @@
         <map name="mtest">
             <mapentry name="key">value</mapentry>
             <mapentry name="another">pair o </mapentry>
+            <mapentry name="blank"></mapentry>
         </map>
     </folder>
 </wallet>

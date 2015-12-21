@@ -12,11 +12,9 @@ Licence: GPL 3+
 appname='kwlexport'
 
 import sys
-import dbus
-import struct
 from base64 import standard_b64encode
 
-int32=struct.Struct('!I')
+from kwlhelper.service import KWallet, PASSWORD, STREAM, MAP
 
 def getargs():
     from argparse import ArgumentParser
@@ -34,112 +32,57 @@ def getargs():
 
     return A
 
-def dopen():
-    sbus=dbus.SessionBus()
-    proxy=sbus.get_object('org.kde.kwalletd', '/modules/kwalletd')
-    return sbus, dbus.Interface(proxy, 'org.kde.KWallet')
-
-def main(kwallet, args):
+def main(args):
     out = args.output
+
+    KWL = KWallet(appname='kwlexport')
 
     if args.wallet:
         wname=args.wallet
     else:
-        x=kwallet.wallets()
+        x=KWL.wallets()
         if len(x)==0:
             raise RuntimeError('No wallets found')
         wname=str(x[0])
 
-    thewallet=kwallet.open(wname, 0, appname)
-    if thewallet<0:
-        raise RuntimeError('Failed to open wallet: '+wname)
+    with KWL.open(wname, create=False) as WALL:
+    
+        out.write(u'''<?xml version="1.0" encoding="UTF-8"?>
+<wallet name="%(name)s">
+'''%{'name':WALL.name})
 
-    folders=kwallet.folderList(thewallet, appname)
+        for FOLD in WALL:
+            out.write(u'    <folder name="%(name)s">\n'%{'name':FOLD.name})
+            for e, etype in FOLD:
+                out.write(u' '*8)
+                if etype==PASSWORD:
+                    p=FOLD.readPassword(e)
+                    out.write(u'<password name="%s">%s</password>\n'%(e,p))
 
-    print >>out,'''<?xml version="1.0" encoding="UTF-8"?>
-    <wallet name="%(name)s">'''%{'name':wname}
+                elif etype==STREAM:
+                    p=FOLD.readStream(e)
+                    p=standard_b64encode(p)
 
-    for f in folders:
+                    out.write(u'<stream name="%s">%s</stream>\n'%(e,p))
 
-        ents=kwallet.entryList(thewallet,f,appname)
-
-        if len(ents)==0:
-            print >>out,u'    <folder name="%(name)s"/>'%{'name':f}
-            continue
-
-        else:
-            print >>out,u'    <folder name="%(name)s">'%{'name':f}
-
-        for e in ents:
-            etype=kwallet.entryType(thewallet,f,e,appname)
-
-            if etype==1:
-                p=kwallet.readPassword(thewallet,f,e,appname)
-                print >>out,' '*8,u'<password name="%s">%s</password>'%(e,p)
-
-            elif etype==2:
-                p=kwallet.readEntry(thewallet,f,e,appname)
-                # returns a list of bytes
-                # convert to byte string
-                p=map(str,p)
-                if len(p)==0:
-                    p=u''
+                elif etype==MAP:
+                    out.write(u'<map name="%s">\n'%e)
+                    for key, val in FOLD.readMapList(e):
+                        out.write(u' '*12)
+                        out.write(u'<mapentry name="%s">%s</mapentry>\n'%(key,val))
+                    out.write(u' '*8)
+                    out.write(u'</map>\n')
+                        
                 else:
-                    p=reduce(str.__add__, p)
-                p=standard_b64encode(p)
+                    print >>sys.stderr,'Ignoring unknown entry type',etype
 
-                print >>out,' '*8,u'<stream name="%s">%s</stream>'%(e,p)
+            out.write(u'    </folder>\n')
 
-            elif etype==3:
-                p=kwallet.readMap(thewallet,f,e,appname)
-                # returns a list of dbus.Byte
-                # convert to byte string
-                p=reduce(str.__add__, map(chr,p))
-
-                # first 4 bytes is the number of pairs
-                count,=int32.unpack(p[:4])
-                p=p[4:]
-
-                if count==0:
-                    print >>out,' '*8,u'<map name="%s"/>'%e
-                    continue
-
-                else:
-                    print >>out,' '*8,u'<map name="%s">'%e
-                    for n in range(count):
-
-                        # length of payload in bytes
-                        keylen,=int32.unpack(p[:4])
-                        p=p[4:]
-                        key=p[:keylen].decode('utf-16be') # payload
-                        p=p[keylen:]
-
-                        vallen,=int32.unpack(p[:4])
-                        p=p[4:]
-                        if vallen==0xffffffff:
-                            val = ''
-                        else:
-                            val=p[:vallen].decode('utf-16be')
-                            p=p[vallen:]
-
-                        print >>out,' '*12,u'<mapentry name="%s">%s</mapentry>'%(key,val)
-                    print >>out,' '*8,'</map>'
-
-            else:
-                print >>sys.stderr,'Ignoring unknown entry type',etype
-
-        print >>out,'    </folder>'
-
-    print >>out,'</wallet>'
-
-    kwallet.close(thewallet,False,appname)
+        out.write(u'</wallet>\n')
 
 if __name__=='__main__':
-    session, kwallet = dopen()
     args = getargs()
     try:
-        main(kwallet, args)
+        main(args)
     finally:
-        session.close()
         args.output.close()
-
